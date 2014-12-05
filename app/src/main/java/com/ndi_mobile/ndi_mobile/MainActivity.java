@@ -68,11 +68,6 @@ public class MainActivity extends Activity
                         .replace(R.id.container, ViewContactsFragment.newInstance())
                         .commit();
                 break;
-            case 3:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, CreateUserFragment.newInstance())
-                        .commit();
-                break;
             default:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -91,9 +86,6 @@ public class MainActivity extends Activity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section4);
                 break;
         }
     }

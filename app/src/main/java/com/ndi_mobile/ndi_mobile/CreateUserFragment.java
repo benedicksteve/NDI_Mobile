@@ -331,7 +331,7 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                onCreateUserButtonPressed(token);
+                onCreateUserButtonPressed(mEmail);
             } else {
                 // TODO : Gerer erreur avec retour serveur
                 Toast.makeText(getActivity(), "Erreur login", Toast.LENGTH_SHORT).show();

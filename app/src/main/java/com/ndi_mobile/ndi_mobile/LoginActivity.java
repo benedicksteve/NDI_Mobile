@@ -225,9 +225,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
                 json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
                 try {
 
-                    //TODO modifier quand succes mis a jour coté serveur
-                    boolSuccess = json.getString("status").equals("OK");
+                    System.out.println(json.toString());
 
+                    boolSuccess = true;
+                    String token = json.getString("token");
                 } catch (Exception e) {
                     boolSuccess = false;
                 }
