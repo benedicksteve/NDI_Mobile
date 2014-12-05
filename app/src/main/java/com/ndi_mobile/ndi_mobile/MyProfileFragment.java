@@ -79,7 +79,7 @@ public class MyProfileFragment extends Fragment {
         email = (TextView) fragmentMyProfileView.findViewById((R.id.email));
         number = (TextView) fragmentMyProfileView.findViewById((R.id.number));
 
-        getAndFillUserInfo();
+        //getAndFillUserInfo();
 
         ImageButton mOkButton = (ImageButton) fragmentMyProfileView.findViewById(R.id.okButton);
             mOkButton.setOnClickListener(new View.OnClickListener() {
