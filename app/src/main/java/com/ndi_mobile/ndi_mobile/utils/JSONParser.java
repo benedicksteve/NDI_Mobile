@@ -35,7 +35,7 @@ public class JSONParser {
 
     // function get json from url
     // by making HTTP POST or GET method
-    public JSONObject makeHttpRequest(String url, String method,
+    public JSONObject makeHttpRequest(String url, String method, String token,
                                       JSONObject params) throws Exception {
 
         // Making HTTP request
@@ -53,6 +53,11 @@ public class JSONParser {
                 se.setContentType("application/json;charset=UTF-8");
                 se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
                 httpPost.setEntity(se);
+
+                if(token != null){
+                       httpPost.setHeader("Authorization", "Bearer "+token);
+                }
+
                 // new
                 HttpParams httpParameters = httpPost.getParams();
                 // Set the timeout in milliseconds until a connection is

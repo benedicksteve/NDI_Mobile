@@ -37,7 +37,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private TextView mUsernameView;
+    private TextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginButtonView;
@@ -49,7 +49,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         setContentView(R.layout.activity_login);
 
         // Set up the login form.
-        mUsernameView = (TextView) findViewById(R.id.username);
+        mEmailView = (TextView) findViewById(R.id.email);
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
@@ -89,7 +89,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
     /**
      * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid username, missing fields, etc.)
+     * If there are form errors (invalid email, missing fields, etc.)
      */
     public void attemptLogin() {
         if (mAuthTask != null) {
@@ -97,11 +97,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         }
 
         // Reset errors.
-        mUsernameView.setError(null);
+        mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mUsernameView.getText().toString();
+        String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -115,10 +115,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             cancel = true;
         }
 
-        // Check for a valid username address.
-        if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
             cancel = true;
         }
 
@@ -130,7 +130,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(this, username, password);
+            mAuthTask = new UserLoginTask(this, email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -186,12 +186,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
     @Override
-    public void onCreateUserFragmentInteraction(String username) {
+    public void onCreateUserFragmentInteraction(String token) {
         getFragmentManager().popBackStack();
 
         mFragmentContainerView.setVisibility(View.GONE);
         mLoginButtonView.setVisibility(View.VISIBLE);
-        mUsernameView.setText(username);
+        mEmailView.setText(token);
     }
 
     /**
@@ -201,14 +201,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private Activity mActivity;
-        private final String mUsername;
+        private final String mEmail;
         private final String mPassword;
         private JSONParser jsonParser = new JSONParser();
         private JSONObject json;
 
-        UserLoginTask(Activity activity, String username, String password) {
+        UserLoginTask(Activity activity, String email, String password) {
             mActivity = activity;
-            mUsername = username;
+            mEmail = email;
             mPassword = password;
         }
 
@@ -216,13 +216,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://aftersoon.herokuapp.com/user/";
+            String URL = "localhost:9000/auth/local";
             JSONObject jParam = new JSONObject();
             try {
-                jParam.put("myUsername", mUsername);
-                jParam.put("myPassword", mPassword);
+                jParam.put("email", mEmail);
+                jParam.put("password", mPassword);
 
-                json = jsonParser.makeHttpRequest(URL+mUsername, "POST", jParam);
+                json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
                 try {
 
                     //TODO modifier quand succes mis a jour coté serveur
@@ -244,11 +244,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
 
             if (success) {
                 try {
-                    JSONObject user = json.getJSONObject("user");
-                    System.out.println(user.toString());
+                    String token = json.getString("token");
+                    System.out.println(token);
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("user", user.toString());
+                    intent.putExtra("token", token);
                     startActivity(intent);
 
                 } catch (JSONException e) {

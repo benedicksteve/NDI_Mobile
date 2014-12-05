@@ -25,7 +25,7 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
-    private String user;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class MainActivity extends Activity
 
         // Methode to get the user
         Bundle bundle = getIntent().getExtras();
-        user = bundle.getString("user");
+        token = bundle.getString("token");
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);

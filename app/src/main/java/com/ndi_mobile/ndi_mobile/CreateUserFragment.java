@@ -17,9 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ndi_mobile.ndi_mobile.utils.JSONParser;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -40,11 +42,11 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
 
     private CreateUserFragmentListener mListener;
 
-    private EditText usernameEditText;
-    private EditText passwordEditText;
     private EditText emailEditText;
-    private EditText phoneNumberEditText;
-    private EditText adresseEditText;
+    private EditText nameEditText;
+    private EditText lastnameEditText;
+    private EditText passwordEditText;
+    private EditText numberEditText;
 
     /**
      * Use this factory method to create a new instance of
@@ -78,11 +80,11 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
 
         mCreateUserButtonView = (View) fragmentCreateUserView.findViewById(R.id.create_user_button);
 
-        usernameEditText = (EditText) fragmentCreateUserView.findViewById((R.id.username));
+        nameEditText = (EditText) fragmentCreateUserView.findViewById((R.id.name));
+        lastnameEditText = (EditText) fragmentCreateUserView.findViewById((R.id.lastname));
         passwordEditText = (EditText) fragmentCreateUserView.findViewById((R.id.password));
         emailEditText = (EditText) fragmentCreateUserView.findViewById((R.id.email));
-        phoneNumberEditText = (EditText) fragmentCreateUserView.findViewById((R.id.phone_number));
-        adresseEditText = (EditText) fragmentCreateUserView.findViewById((R.id.adresse));
+        numberEditText = (EditText) fragmentCreateUserView.findViewById((R.id.phone_number));
 
         Button mUsernameSignInButton = (Button) fragmentCreateUserView.findViewById(R.id.create_user_button);
         mUsernameSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -107,23 +109,33 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
         }
 
         // Reset errors.
-        usernameEditText.setError(null);
+        nameEditText.setError(null);
+        lastnameEditText.setError(null);
         passwordEditText.setError(null);
+        emailEditText.setError(null);
+        numberEditText.setError(null);
+
 
         // Store values at the time of the login attempt.
-        String username = usernameEditText.getText().toString();
+        String name = nameEditText.getText().toString();
+        String lastname = lastnameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         String email = emailEditText.getText().toString();
-        String phoneNumber = phoneNumberEditText.getText().toString();
-        String adresse = adresseEditText.getText().toString();
+        String number = numberEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid Username
-        if (TextUtils.isEmpty(username)) {
-            usernameEditText.setError("error username");
-            focusView = usernameEditText;
+        // Check for a valid name
+        if (TextUtils.isEmpty(name)) {
+            nameEditText.setError("error name");
+            focusView = nameEditText;
+            cancel = true;
+        }
+        // Check for a valid lastname
+        if (TextUtils.isEmpty(lastname)) {
+            nameEditText.setError("error lastname");
+            focusView = nameEditText;
             cancel = true;
         }
 
@@ -141,17 +153,10 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
             cancel = true;
         }
 
-        // Check for a valid phoneNumber
-        if (TextUtils.isEmpty(phoneNumber)) {
-            phoneNumberEditText.setError("error phoneNumber");
-            focusView = phoneNumberEditText;
-            cancel = true;
-        }
-
-        // Check for a valid adresse
-        if (TextUtils.isEmpty(adresse)) {
-            adresseEditText.setError("error adresse");
-            focusView = adresseEditText;
+        // Check for a valid number
+        if (TextUtils.isEmpty(number)) {
+            numberEditText.setError("error number");
+            focusView = numberEditText;
             cancel = true;
         }
 
@@ -163,14 +168,14 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mCreateUserTask = new CreateUserTask(username, password, email, phoneNumber, adresse);
+            mCreateUserTask = new CreateUserTask(name, lastname, password, email, number);
             mCreateUserTask.execute((Void) null);
         }
     }
 
-    public void onCreateUserButtonPressed(String username) {
+    public void onCreateUserButtonPressed(String token) {
         if (mListener != null) {
-            mListener.onCreateUserFragmentInteraction(username);
+            mListener.onCreateUserFragmentInteraction(token);
         }
     }
 
@@ -202,7 +207,7 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface CreateUserFragmentListener {
-        public void onCreateUserFragmentInteraction(String username);
+        public void onCreateUserFragmentInteraction(String token);
     }
 
     /**
@@ -261,43 +266,44 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
      */
     public class CreateUserTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername;
+        private final String mName;
+        private final String mLastname;
         private final String mPassword;
         private final String mEmail;
-        private final String mPhoneNumber;
-        private final String mAdresse;
+        private final String mNumber;
 
         private JSONParser jsonParser = new JSONParser();
         private JSONObject json;
 
-        CreateUserTask(String username, String password, String email, String phoneNumber, String adresse) {
-            mUsername = username;
+        CreateUserTask(String name, String lastname, String password, String email, String number) {
+            mName = name;
+            mLastname = lastname;
             mPassword = password;
             mEmail = email;
-            mPhoneNumber = phoneNumber;
-            mAdresse = adresse;
+            mNumber = number;
         }
 
         @Override
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://aftersoon.herokuapp.com/user";
+            String URL = "http://localhost:9000/api/users";
             JSONObject jParam = new JSONObject();
             try {
-                jParam.put("username", mUsername);
+                jParam.put("first_name", mName);
+                jParam.put("last_name",mLastname);
                 jParam.put("password", mPassword);
                 jParam.put("email", mEmail);
-                jParam.put("adresse",mAdresse);
-                jParam.put("telephone",mPhoneNumber);
+                jParam.put("number",mNumber);
 
-                json = jsonParser.makeHttpRequest(URL, "POST", jParam);
+                json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
                 try {
 
                     //TODO modifier quand succes mis a jour coté serveur
                     System.out.println(json.toString());
 
-                    boolSuccess = json.getString("status").equals("OK");
+                    boolSuccess = true;
+                    String token = json.getString("token");
 
                 } catch (Exception e) {
                    System.out.println("erreur 1");
@@ -317,9 +323,19 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
             showProgress(false);
 
             if (success) {
-                onCreateUserButtonPressed(usernameEditText.getText().toString());
+                String token = null;
+                try {
+                    token = json.getString("token");
+                    System.out.println(token.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                onCreateUserButtonPressed(token);
             } else {
-                // TODO : Gerer erreur avec retour serveur succes
+                // TODO : Gerer erreur avec retour serveur
+                Toast.makeText(getActivity(), "Erreur login", Toast.LENGTH_SHORT).show();
+
             }
         }
 

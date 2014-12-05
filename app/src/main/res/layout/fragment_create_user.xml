@@ -12,8 +12,14 @@
         <LinearLayout android:id="@+id/user_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
 
-            <EditText android:id="@+id/username" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="Username"
+            <EditText android:id="@+id/name" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Name"
+                android:inputType="text" android:maxLines="1"
+                android:singleLine="true" />
+
+
+            <EditText android:id="@+id/lastname" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Lastname"
                 android:inputType="text" android:maxLines="1"
                 android:singleLine="true" />
 
@@ -30,11 +36,6 @@
             <EditText android:id="@+id/phone_number" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="Phone Number"
                 android:inputType="phone" android:maxLines="1"
-                android:singleLine="true" />
-
-            <EditText android:id="@+id/adresse" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="Adresse"
-                android:inputType="textPostalAddress" android:maxLines="1"
                 android:singleLine="true" />
 
             <!-- Login progress -->
