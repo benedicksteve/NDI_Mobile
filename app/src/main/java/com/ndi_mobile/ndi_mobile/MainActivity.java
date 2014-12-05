@@ -65,7 +65,11 @@ public class MainActivity extends Activity
                         .replace(R.id.container, DangerZonesFragment.newInstance(position + 1))
                         .commit();
                 break;
-
+            case 2:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, ViewContactsFragment.newInstance())
+                        .commit();
+                break;
             default:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))

@@ -111,12 +111,12 @@ public class MyProfileFragment extends Fragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         final ArrayList<String[]> contacts = new ArrayList<String[]>();
-        contacts.add(new String[]{"Joris", "5 minutes", "OK"});
-        contacts.add(new String[]{"Toto", "10 minutes", "KO"});
-        contacts.add(new String[]{"Bra", "12 minutes", "OK"});
-        contacts.add(new String[]{"Yolo", "12 minutes", "OK"});
-        contacts.add(new String[]{"Coucou", "15 minutes", "WARNING"});
-        contacts.add(new String[]{"Biolo", "20 minutes", "OK"});
+        contacts.add(new String[]{"Joris", "5 minutes", "KO"});
+        contacts.add(new String[]{"Fadoua", "10 minutes", "OK"});
+        contacts.add(new String[]{"Hugo", "12 minutes", "OK"});
+        contacts.add(new String[]{"Stephane", "12 minutes", "OK"});
+        contacts.add(new String[]{"Antoine", "15 minutes", "WARNING"});
+        contacts.add(new String[]{"Steve", "20 minutes", "OK"});
 
         mAdapter = new TimeLineAdapter(contacts, R.layout.row_timeline, getActivity());
         mRecyclerView.setAdapter(mAdapter);
@@ -254,7 +254,7 @@ public class MyProfileFragment extends Fragment {
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://localhost:9000/?";
+            String URL = "http://localhost:9000/api/pings";
             JSONObject jParam = new JSONObject();
             try {
                 jParam.put("user", id);

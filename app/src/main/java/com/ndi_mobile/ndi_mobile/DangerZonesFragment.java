@@ -120,8 +120,8 @@ public class DangerZonesFragment extends Fragment {
         latitude = 48.583;
         longitude = 7.75;
 
-        final double[] markerLong = {7.2, 7};
-        final double[] markerLat = {47, 46};
+        final double[] markerLong = {7.6, 8};
+        final double[] markerLat = {48, 47.9};
 
         webView.loadUrl(url);
 
