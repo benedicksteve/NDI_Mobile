@@ -102,19 +102,16 @@ public class MyProfileFragment extends Fragment {
 
     }
 
-    //TODO ok button action
     private void okButtonAction() {
         if(pingTask==null)
             pingTask = new PingTask("ok");
     }
 
-    //TODO ko button action
     private void koButtonAction() {
        if(pingTask==null)
             pingTask = new PingTask("ko");
     }
 
-    //TODO ok button action
     private void warningButtonAction() {
         if(pingTask==null)
             pingTask = new PingTask("warning");
@@ -128,6 +125,64 @@ public class MyProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class getUserInfoTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mPingStatus;
+
+        private JSONParser jsonParser = new JSONParser();
+        private JSONObject json;
+
+        PingTask(String pingStatus) {
+            mPingStatus = pingStatus;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... param) {
+
+            boolean boolSuccess = false;
+            String URL = "http://localhost:9000/?";
+            JSONObject jParam = new JSONObject();
+            try {
+                jParam.put("user", id);
+                jParam.put("status", mPingStatus);
+                jParam.put("localisation", "{\"latitude\":\"48.583\",\"longitude\":\"7.75\"}");
+
+                json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
+                try {
+
+                    //TODO modifier quand succes mis a jour coté serveur
+                    System.out.println(json.toString());
+
+                    boolSuccess = true;
+
+                } catch (Exception e) {
+                    System.out.println("erreur 1");
+                    boolSuccess = false;
+                }
+            } catch (Exception e1) {
+                System.out.println("erreur 2");
+
+                boolSuccess = false;
+            }
+            return boolSuccess;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            pingTask = null;
+        }
+
+
+        @Override
+        protected void onCancelled() {
+            pingTask = null;
+        }
     }
 
     /**
@@ -153,9 +208,8 @@ public class MyProfileFragment extends Fragment {
             JSONObject jParam = new JSONObject();
             try {
                 jParam.put("user", id);
-
                 jParam.put("status", mPingStatus);
-                jParam.put("localisation", "{\"\":\"\",\"\":\"\"}");
+                jParam.put("localisation", "{\"latitude\":\"48.583\",\"longitude\":\"7.75\"}");
 
                 json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
                 try {
@@ -164,7 +218,6 @@ public class MyProfileFragment extends Fragment {
                     System.out.println(json.toString());
 
                     boolSuccess = true;
-                    String token = json.getString("token");
 
                 } catch (Exception e) {
                     System.out.println("erreur 1");
@@ -180,31 +233,13 @@ public class MyProfileFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mCreateUserTask = null;
-            showProgress(false);
-
-            if (success) {
-                String token = null;
-                try {
-                    token = json.getString("token");
-                    System.out.println(token.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                onCreateUserButtonPressed(token);
-            } else {
-                // TODO : Gerer erreur avec retour serveur
-                Toast.makeText(getActivity(), "Erreur login", Toast.LENGTH_SHORT).show();
-
-            }
+            pingTask = null;
         }
 
 
         @Override
         protected void onCancelled() {
-            mCreateUserTask = null;
-            showProgress(false);
+            pingTask = null;
         }
     }
 }
