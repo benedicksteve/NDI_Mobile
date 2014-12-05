@@ -1,19 +1,29 @@
 package com.ndi_mobile.ndi_mobile;
 
 import android.app.Activity;
+import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ndi_mobile.ndi_mobile.utils.JSONParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link MyProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -24,28 +34,16 @@ public class MyProfileFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String token;
 
-    private OnFragmentInteractionListener mListener;
+    private PingTask pingTask=null;
+    private TextView email;
+    private TextView name;
+    private TextView lastname;
+    private TextView number;
+    private ImageView profilePictureView;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyProfileFragment newInstance(String param1, String param2) {
-        MyProfileFragment fragment = new MyProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private String id;
 
     public MyProfileFragment() {
         // Required empty public constructor
@@ -55,8 +53,7 @@ public class MyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            token = getArguments().getString(ARG_PARAM1);
         }
     }
 
@@ -64,46 +61,150 @@ public class MyProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_profile, container, false);
+        View fragmentMyProfileView = inflater.inflate(R.layout.fragment_my_profile, container, false);
+
+        name = (TextView) fragmentMyProfileView.findViewById((R.id.firstname));
+        lastname = (TextView) fragmentMyProfileView.findViewById((R.id.lastname));
+        email = (TextView) fragmentMyProfileView.findViewById((R.id.email));
+        number = (TextView) fragmentMyProfileView.findViewById((R.id.number));
+
+        getAndFillUserInfo();
+
+        ImageButton mOkButton = (ImageButton) fragmentMyProfileView.findViewById(R.id.okButton);
+            mOkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                okButtonAction();
+            }
+        });
+
+        ImageButton mKoButton = (ImageButton) fragmentMyProfileView.findViewById(R.id.koButton);
+        mKoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                koButtonAction();
+            }
+        });
+
+        ImageButton mWarningButton = (ImageButton) fragmentMyProfileView.findViewById(R.id.warningButton);
+        mWarningButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                warningButtonAction();
+            }
+        });
+
+        return fragmentMyProfileView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    //Todo
+    private void getAndFillUserInfo() {
+
+    }
+
+    //TODO ok button action
+    private void okButtonAction() {
+        if(pingTask==null)
+            pingTask = new PingTask("ok");
+    }
+
+    //TODO ko button action
+    private void koButtonAction() {
+       if(pingTask==null)
+            pingTask = new PingTask("ko");
+    }
+
+    //TODO ok button action
+    private void warningButtonAction() {
+        if(pingTask==null)
+            pingTask = new PingTask("warning");
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }
+    public class PingTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mPingStatus;
+
+        private JSONParser jsonParser = new JSONParser();
+        private JSONObject json;
+
+        PingTask(String pingStatus) {
+            mPingStatus = pingStatus;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... param) {
+
+            boolean boolSuccess = false;
+            String URL = "http://localhost:9000/?";
+            JSONObject jParam = new JSONObject();
+            try {
+                jParam.put("user", id);
+
+                jParam.put("status", mPingStatus);
+                jParam.put("localisation", "{\"\":\"\",\"\":\"\"}");
+
+                json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
+                try {
+
+                    //TODO modifier quand succes mis a jour coté serveur
+                    System.out.println(json.toString());
+
+                    boolSuccess = true;
+                    String token = json.getString("token");
+
+                } catch (Exception e) {
+                    System.out.println("erreur 1");
+                    boolSuccess = false;
+                }
+            } catch (Exception e1) {
+                System.out.println("erreur 2");
+
+                boolSuccess = false;
+            }
+            return boolSuccess;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mCreateUserTask = null;
+            showProgress(false);
+
+            if (success) {
+                String token = null;
+                try {
+                    token = json.getString("token");
+                    System.out.println(token.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                onCreateUserButtonPressed(token);
+            } else {
+                // TODO : Gerer erreur avec retour serveur
+                Toast.makeText(getActivity(), "Erreur login", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
+
+        @Override
+        protected void onCancelled() {
+            mCreateUserTask = null;
+            showProgress(false);
+        }
+    }
 }
