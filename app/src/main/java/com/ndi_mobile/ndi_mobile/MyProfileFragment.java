@@ -30,6 +30,8 @@ public class MyProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String token;
 
+    private View fragmentMyProfileView;
+
     private PingTask pingTask=null;
     private TextView email;
     private TextView name;
@@ -55,7 +57,7 @@ public class MyProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentMyProfileView = inflater.inflate(R.layout.fragment_my_profile, container, false);
+        fragmentMyProfileView = inflater.inflate(R.layout.fragment_my_profile, container, false);
 
         name = (TextView) fragmentMyProfileView.findViewById((R.id.firstname));
         lastname = (TextView) fragmentMyProfileView.findViewById((R.id.lastname));
@@ -137,6 +139,11 @@ public class MyProfileFragment extends Fragment {
         private JSONParser jsonParser = new JSONParser();
         private JSONObject json;
 
+        private String mFirstname;
+        private String mLastname;
+        private String mNumber;
+        private String mEmail;
+
         GetUserInfoTask() {
         }
 
@@ -155,9 +162,17 @@ public class MyProfileFragment extends Fragment {
                     //TODO modifier quand succes mis a jour coté serveur
                     System.out.println(json.toString());
                     id = json.getString("_id");
-
+                    mFirstname = json.getString("first_name");
+                    mLastname = json.getString("last_name");
+                    mEmail = json.getString("email");
                     boolSuccess = true;
 
+                    try {
+                        mNumber = json.getString("number");
+                    }
+                    catch (Exception e){
+                        mNumber = null;
+                    }
                 } catch (Exception e) {
                     System.out.println("erreur 1");
                     boolSuccess = false;
@@ -172,6 +187,12 @@ public class MyProfileFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            name.setText(mFirstname);
+            lastname.setText(mLastname);
+            email.setText(mEmail);
+            if(mNumber!=null){
+                number.setText(mNumber);
+            }
         }
 
 
