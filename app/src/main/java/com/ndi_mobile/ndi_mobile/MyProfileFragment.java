@@ -21,12 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * Use the {@link MyProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MyProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,7 +37,7 @@ public class MyProfileFragment extends Fragment {
     private TextView number;
     private ImageView profilePictureView;
 
-    private String id;
+    private String id=null;
 
     public MyProfileFragment() {
         // Required empty public constructor
@@ -99,22 +93,29 @@ public class MyProfileFragment extends Fragment {
 
     //Todo
     private void getAndFillUserInfo() {
-
+        GetUserInfoTask getUserInfoTask = new GetUserInfoTask();
+        getUserInfoTask.execute((Void) null);
     }
 
     private void okButtonAction() {
-        if(pingTask==null)
+        if(pingTask==null && id!=null) {
             pingTask = new PingTask("ok");
+            pingTask.execute((Void) null);
+        }
     }
 
     private void koButtonAction() {
-       if(pingTask==null)
-            pingTask = new PingTask("ko");
+       if(pingTask==null && id!=null) {
+           pingTask = new PingTask("ko");
+           pingTask.execute((Void) null);
+       }
     }
 
     private void warningButtonAction() {
-        if(pingTask==null)
+        if(pingTask==null && id!=null){
             pingTask = new PingTask("warning");
+            pingTask.execute((Void) null);
+        }
     }
 
     @Override
@@ -131,33 +132,29 @@ public class MyProfileFragment extends Fragment {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class getUserInfoTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mPingStatus;
+    public class GetUserInfoTask extends AsyncTask<Void, Void, Boolean> {
 
         private JSONParser jsonParser = new JSONParser();
         private JSONObject json;
 
-        PingTask(String pingStatus) {
-            mPingStatus = pingStatus;
+        GetUserInfoTask() {
         }
 
         @Override
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://localhost:9000/?";
+            String URL = "http://localhost:9000/user/me";
             JSONObject jParam = new JSONObject();
             try {
-                jParam.put("user", id);
-                jParam.put("status", mPingStatus);
-                jParam.put("localisation", "{\"latitude\":\"48.583\",\"longitude\":\"7.75\"}");
 
-                json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
+
+                json = jsonParser.makeHttpRequest(URL, "GET", token, jParam);
                 try {
 
                     //TODO modifier quand succes mis a jour coté serveur
                     System.out.println(json.toString());
+                    id = json.getString("_id");
 
                     boolSuccess = true;
 
@@ -175,7 +172,6 @@ public class MyProfileFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            pingTask = null;
         }
 
 
@@ -211,7 +207,7 @@ public class MyProfileFragment extends Fragment {
                 jParam.put("status", mPingStatus);
                 jParam.put("localisation", "{\"latitude\":\"48.583\",\"longitude\":\"7.75\"}");
 
-                json = jsonParser.makeHttpRequest(URL, "POST", null, jParam);
+                json = jsonParser.makeHttpRequest(URL, "POST", token, jParam);
                 try {
 
                     //TODO modifier quand succes mis a jour coté serveur
