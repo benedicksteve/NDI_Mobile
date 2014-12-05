@@ -216,7 +216,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "localhost:9000/auth/local";
+            String URL = "http://128.199.45.69:9000/auth/local";
             JSONObject jParam = new JSONObject();
             try {
                 jParam.put("email", mEmail);

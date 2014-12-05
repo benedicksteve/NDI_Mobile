@@ -287,7 +287,7 @@ public class CreateUserFragment extends Fragment implements LoaderManager.Loader
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://localhost:9000/api/users";
+            String URL = "http://128.199.45.69:9000/api/users";
             JSONObject jParam = new JSONObject();
             try {
                 jParam.put("first_name", mName);

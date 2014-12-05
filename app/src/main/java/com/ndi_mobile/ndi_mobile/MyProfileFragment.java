@@ -184,7 +184,7 @@ public class MyProfileFragment extends Fragment {
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://localhost:9000/user/me";
+            String URL = "http://128.199.45.69:9000/user/me";
             JSONObject jParam = new JSONObject();
             try {
 
@@ -254,7 +254,7 @@ public class MyProfileFragment extends Fragment {
         protected Boolean doInBackground(Void... param) {
 
             boolean boolSuccess = false;
-            String URL = "http://localhost:9000/api/pings";
+            String URL = "http://128.199.45.69:9000/api/pings";
             JSONObject jParam = new JSONObject();
             try {
                 jParam.put("user", id);
