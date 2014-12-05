@@ -3,6 +3,7 @@ package com.ndi_mobile.ndi_mobile.utils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -88,6 +89,10 @@ public class JSONParser {
                 se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
                 httpPut.setEntity(se);
 
+                if(token != null){
+                    httpPut.setHeader("Authorization", "Bearer "+token);
+                }
+
                 // new
                 HttpParams httpParameters = httpPut.getParams();
                 // Set the timeout in milliseconds until a connection is
@@ -105,13 +110,18 @@ public class JSONParser {
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
             }
-            /* else if (method == "GET") {
+            else if (method == "GET") {
                 // request method is GET
                 DefaultHttpClient httpClient = new DefaultHttpClient();
-                String paramString = URLEncodedUtils.format(params, "utf-8");
-                url += "?" + paramString;
+                //String paramString = URLEncodedUtils.format(params, "utf-8");
+                //url += "?" + paramString;
                 HttpGet httpGet = new HttpGet(url);
                 // new
+
+                if(token != null){
+                    httpGet.setHeader("Authorization", "Bearer "+token);
+                }
+
                 HttpParams httpParameters = httpGet.getParams();
                 // Set the timeout in milliseconds until a connection is
                 // established.
@@ -127,7 +137,7 @@ public class JSONParser {
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
-            }*/
+            }
 
         } catch (UnsupportedEncodingException e) {
             throw new Exception("Unsupported encoding error.");
