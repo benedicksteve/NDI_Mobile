@@ -33,8 +33,8 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
 
         // Methode to get the user
-        Bundle bundle = getIntent().getExtras();
-        token = bundle.getString("token");
+        //Bundle bundle = getIntent().getExtras();
+        //token = bundle.getString("token");
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -52,6 +52,12 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
 
         switch(position){
+            case 2:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, DangerZonesFragment.newInstance(position + 1))
+                        .commit();
+                break;
+
             default:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -70,6 +76,9 @@ public class MainActivity extends Activity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
                 break;
         }
     }

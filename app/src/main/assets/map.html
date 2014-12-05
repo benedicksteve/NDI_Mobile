@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+    </style>
+
+      <style type="text/css">
+          .labels {
+          color: white;
+          background-color: orange;
+          font-family: "Lucida Grande", "Arial", sans-serif;
+          font-size: 10px;
+          text-align: center;
+          width: 10px;
+          white-space: nowrap;
+          }
+      </style>
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+
+var map;
+
+function initialize(lat, long, markerLat, markerLong) {
+
+  var mapOptions = {
+    zoom: 8,
+    center: new google.maps.LatLng(lat, long),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+for(var i = 0; i<markerLat.length; i++)
+{
+     var image = 'warning.png';
+
+    var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(markerLat[i],markerLong[i]),
+          map: map,
+          title: 'Camp Joris',
+          icon: image
+      });
+
+      var iw = new google.maps.InfoWindow({
+       content: "Nom du lieu"
+     });
+
+     google.maps.event.addListener(marker, "click", function (e) { iw.open(map, this); });
+
+}
+
+}
+
+
+
+function go()
+{
+    google.maps.event.addDomListener(window, 'load', initialize);
+}
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
