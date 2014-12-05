@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +23,20 @@ import com.ndi_mobile.ndi_mobile.utils.JSONParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class MyProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_TOKEN = "token";
 
     // TODO: Rename and change types of parameters
     private String token;
 
     private View fragmentMyProfileView;
+    private RecyclerView mRecyclerView;
+    private TimeLineAdapter mAdapter;
 
     private PingTask pingTask=null;
     private TextView email;
@@ -41,6 +47,15 @@ public class MyProfileFragment extends Fragment {
 
     private String id=null;
 
+
+    public static MyProfileFragment newInstance(String token) {
+        MyProfileFragment fragment = new MyProfileFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_TOKEN, token);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public MyProfileFragment() {
         // Required empty public constructor
     }
@@ -49,7 +64,7 @@ public class MyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            token = getArguments().getString(ARG_PARAM1);
+            token = getArguments().getString(ARG_TOKEN);
         }
     }
 
@@ -89,6 +104,24 @@ public class MyProfileFragment extends Fragment {
                 warningButtonAction();
             }
         });
+
+        mRecyclerView = (RecyclerView) fragmentMyProfileView.findViewById(R.id.list);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        final ArrayList<String[]> contacts = new ArrayList<String[]>();
+        contacts.add(new String[]{"Joris", "5 minutes", "OK"});
+        contacts.add(new String[]{"Toto", "10 minutes", "KO"});
+        contacts.add(new String[]{"Bra", "12 minutes", "OK"});
+        contacts.add(new String[]{"Yolo", "12 minutes", "OK"});
+        contacts.add(new String[]{"Coucou", "15 minutes", "WARNING"});
+        contacts.add(new String[]{"Biolo", "20 minutes", "OK"});
+
+        mAdapter = new TimeLineAdapter(contacts, R.layout.row_timeline, getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+
+
 
         return fragmentMyProfileView;
     }

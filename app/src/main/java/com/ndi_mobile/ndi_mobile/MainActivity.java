@@ -52,7 +52,15 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
 
         switch(position){
-            case 2:
+
+            case 0:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, MyProfileFragment.newInstance(token))
+                        .commit();
+                break;
+
+
+            case 1:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, DangerZonesFragment.newInstance(position + 1))
                         .commit();
@@ -76,9 +84,6 @@ public class MainActivity extends Activity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section4);
                 break;
         }
     }

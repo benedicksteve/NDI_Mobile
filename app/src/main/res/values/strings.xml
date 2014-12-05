@@ -3,9 +3,8 @@
 
     <string name="app_name">NDI_Mobile</string>
     <string name="title_section1">My Profile</string>
-    <string name="title_section2">Timeline</string>
-    <string name="title_section3">Danger zones</string>
-    <string name="title_section4">Camp</string>
+    <string name="title_section2">Danger zones</string>
+    <string name="title_section3">View/add Contact (TODO)</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>

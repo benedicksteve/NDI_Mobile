@@ -107,6 +107,16 @@
                 />
         </LinearLayout>
 
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            tools:context="com.ndi_mobile.ndi_mobile.TimeLineFragment"
+
+            />
+
     </LinearLayout>
 
 </FrameLayout>
